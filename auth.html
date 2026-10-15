@@ -26,6 +26,7 @@
   .primary { width: 100%; height: 50px; margin-top: 18px; border-radius: 4px; background: #35c5f0; color: #fff; font-size: 16px; font-weight: 700; }
   .primary:hover { background: #2fb3db; }
   .primary:disabled { background: #b8e8f8; cursor: default; }
+  button:disabled { opacity: .55; cursor: default; }
   .text { color: #35a8d4; font-size: 14px; font-weight: 700; white-space: nowrap; padding: 0 6px; }
   .hint { min-height: 18px; margin-top: 6px; font-size: 13px; color: #828c94; }
   .hint.ok { color: #13a86b; } .hint.bad { color: #f2564b; }
@@ -179,8 +180,10 @@
   };
   $("#signup").onclick = async () => {
     const loginId = $("#su-id").value.trim(), password = $("#su-pw").value, passwordConfirm = $("#su-pw2").value;
+    if (!password) return hint("#su-hint", "비밀번호를 넣어 주세요", "bad");
+    if (password !== passwordConfirm) return hint("#su-hint", "비밀번호 두 칸이 달라요", "bad");
     const r = await call("POST", "/api/members", { body: { loginId, password, passwordConfirm } });
-    if (r.ok) { hint("#su-hint", "가입됐어요. 오른쪽에서 로그인해 보세요", "ok"); $("#li-id").value = loginId; $("#su-pw").value = $("#su-pw2").value = ""; }
+    if (r.ok) { hint("#su-hint", "가입됐어요. 오른쪽에서 로그인해 보세요", "ok"); hint("#su-id-hint", "", ""); $("#li-id").value = loginId; $("#su-pw").value = $("#su-pw2").value = ""; }
     else hint("#su-hint", msg(r.data, "가입 실패 (요청 기록을 보세요)"), "bad");
   };
   $("#login").onclick = async () => {
@@ -199,6 +202,11 @@
     if (r.ok) { oldAccess = access; access = null; showToken(); $("#who").textContent = "로그아웃됐어요. 아래에서 옛 토큰을 시험해 보세요."; }
   };
   $("#old").onclick = () => oldAccess ? call("GET", "/api/members/me", { token: oldAccess }) : log("GET", "/api/members/me", 0, "로그아웃한 토큰이 아직 없어요", null);
+
+  document.querySelectorAll("button").forEach(b => {
+    const f = b.onclick; if (!f) return;
+    b.onclick = async e => { if (b.disabled) return; b.disabled = true; try { await f(e); } finally { b.disabled = false; } };
+  });
 })();
 </script>
 </body>
