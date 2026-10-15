@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>로그인 연습 · 코어홈</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='5' fill='%2335c5f0'/%3E%3C/svg%3E" />
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #fff; color: #2f3438; font-family: "Apple SD Gothic Neo", Pretendard, "Noto Sans KR", "Malgun Gothic", sans-serif; -webkit-font-smoothing: antialiased; }
+  button { font: inherit; border: 0; background: none; color: inherit; cursor: pointer; }
+  .promo { height: 42px; display: grid; place-items: center; background: #35c5f0; color: #fff; font-size: 14px; font-weight: 700; padding: 0 16px; text-align: center; }
+  header { max-width: 1100px; margin: 0 auto; padding: 18px 16px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #eee; }
+  .brand { display: flex; align-items: center; gap: 8px; font-size: 22px; font-weight: 800; letter-spacing: -.04em; }
+  .brand i { width: 28px; height: 28px; border-radius: 9px; background: #35c5f0; display: inline-block; }
+  header .back { margin-left: auto; color: #888; font-size: 14px; text-decoration: none; }
+  main { max-width: 1100px; margin: 0 auto; padding: 24px 16px 60px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+  section { border: 1px solid #eee; border-radius: 8px; padding: 22px 20px; }
+  h2 { margin: 0 0 4px; font-size: 20px; font-weight: 800; letter-spacing: -.04em; }
+  .sub { margin: 0 0 18px; color: #828c94; font-size: 13px; line-height: 1.5; }
+  label { display: block; font-size: 14px; font-weight: 700; margin: 14px 0 6px; }
+  .row { display: flex; gap: 8px; }
+  input { width: 100%; height: 48px; padding: 0 14px; border: 1px solid #dbdbdb; border-radius: 4px; font-size: 15px; color: #2f3438; background: #fff; }
+  input:focus { outline: none; border-color: #35c5f0; box-shadow: 0 0 0 3px rgba(53,197,240,.15); }
+  .primary { width: 100%; height: 50px; margin-top: 18px; border-radius: 4px; background: #35c5f0; color: #fff; font-size: 16px; font-weight: 700; }
+  .primary:hover { background: #2fb3db; }
+  .primary:disabled { background: #b8e8f8; cursor: default; }
+  .text { color: #35a8d4; font-size: 14px; font-weight: 700; white-space: nowrap; padding: 0 6px; }
+  .hint { min-height: 18px; margin-top: 6px; font-size: 13px; color: #828c94; }
+  .hint.ok { color: #13a86b; } .hint.bad { color: #f2564b; }
+  .lines button { width: 100%; text-align: left; padding: 16px 4px; border-bottom: 1px solid #eee; font-size: 16px; font-weight: 700; }
+  .lines button:after { content: "›"; float: right; color: #bbb; }
+  .lines button small { display: block; font-weight: 400; color: #828c94; font-size: 12px; margin-top: 3px; }
+  .card { background: #f5f7f8; border-radius: 8px; padding: 14px 16px; font-size: 13px; line-height: 1.7; margin-bottom: 8px; word-break: break-all; }
+  .card b { display: inline-block; min-width: 68px; color: #828c94; font-weight: 700; }
+  .pill { display: inline-block; min-width: 46px; text-align: center; padding: 1px 8px; border-radius: 10px; font-size: 12px; font-weight: 700; color: #fff; }
+  .p2 { background: #13a86b; } .p4 { background: #f5a623; } .p5, .p0 { background: #f2564b; }
+  #log { grid-column: 1 / -1; }
+  #log ol { list-style: none; margin: 0; padding: 0; max-height: 360px; overflow: auto; }
+  #log li { padding: 10px 2px; border-bottom: 1px solid #eee; font-size: 13px; line-height: 1.55; }
+  #log li code { color: #2f3438; font-family: ui-monospace, Menlo, monospace; font-size: 12px; }
+  #log .t { color: #888; margin-right: 6px; }
+  details { grid-column: 1 / -1; font-size: 13px; color: #828c94; }
+  details summary { cursor: pointer; font-weight: 700; color: #2f3438; }
+  details p { line-height: 1.6; }
+</style>
+</head>
+<body>
+<div class="promo">로그인 연습 · 회원가입 → 로그인(JWT) → 내 정보 → 새로고침 → 로그아웃</div>
+<header>
+  <div class="brand"><i></i>코어홈</div>
+  <a class="back" href="./">화면 목록 ›</a>
+</header>
+<main>
+  <section>
+    <h2>회원가입</h2>
+    <p class="sub">아이디는 중복 확인부터. 비밀번호는 이 화면에 남지 않아요.</p>
+    <label for="su-id">아이디</label>
+    <div class="row"><input id="su-id" autocomplete="off" /><button class="text" id="check">중복 확인</button></div>
+    <div class="hint" id="su-id-hint"></div>
+    <label for="su-pw">비밀번호</label>
+    <input id="su-pw" type="password" autocomplete="new-password" />
+    <label for="su-pw2">비밀번호 확인</label>
+    <input id="su-pw2" type="password" autocomplete="new-password" />
+    <div class="hint" id="su-hint"></div>
+    <button class="primary" id="signup">회원가입</button>
+  </section>
+
+  <section>
+    <h2>로그인</h2>
+    <p class="sub">access 토큰은 이 페이지 메모리에만 둬요(저장소에 안 남김). refresh 토큰은 서버가 쿠키로 줘요.</p>
+    <label for="li-id">아이디</label>
+    <input id="li-id" autocomplete="username" />
+    <label for="li-pw">비밀번호</label>
+    <input id="li-pw" type="password" autocomplete="current-password" />
+    <div class="hint" id="li-hint"></div>
+    <button class="primary" id="login">로그인</button>
+  </section>
+
+  <section>
+    <h2>내 계정</h2>
+    <p class="sub" id="who">로그인 전이에요.</p>
+    <div class="card" id="tok">토큰 없음</div>
+    <div class="lines">
+      <button id="me">내 정보<small>GET /api/members/me · Authorization: Bearer</small></button>
+      <button id="refresh">토큰 새로고침<small>POST /api/auth/refresh · 쿠키 + X-Requested-With</small></button>
+      <button id="logout">로그아웃<small>POST /api/auth/logout · 서버(Valkey)가 이전 토큰을 무효로</small></button>
+      <button id="old">로그아웃한 토큰으로 내 정보<small>401이 나와야 정상</small></button>
+    </div>
+  </section>
+
+  <section id="log">
+    <h2>요청 기록</h2>
+    <p class="sub">최신이 위. 토큰 값은 길이만 보여 줘요.</p>
+    <ol id="logs"></ol>
+  </section>
+
+  <details>
+    <summary>연결 설정</summary>
+    <label for="api">API 주소</label>
+    <input id="api" />
+    <p>지금은 서버를 인터넷에 열지 않고 <b>mok Mac의 SSH 터널</b>로만 접속해요(Safari 권장). 주소 끝에 경로(<code>/demo</code>)까지 넣어요.
+    다른 주소로 시험하려면 이 칸을 바꾸거나 <code>?api=https://…</code>로 열어요.</p>
+    <p>화면(<code>parcprive.github.io</code>)과 API는 서로 다른 사이트라, 서버가 refresh 쿠키를 <b>SameSite=Strict</b>로 주면 브라우저가 이 화면의 요청에 쿠키를 싣지 않아요.
+    그래서 <b>토큰 새로고침</b>은 여기서 실패할 수 있어요(보안상 정상). 화면과 API를 같은 사이트에 두면 돼요.</p>
+  </details>
+</main>
+<script>
+(() => {
+  const $ = (s) => document.querySelector(s);
+  const DEFAULT_API = "https://api.ext.lab:10443/demo";
+  const q = new URLSearchParams(location.search).get("api");
+  $("#api").value = q || DEFAULT_API;
+  $("#su-id").value = "tester" + new Date().toTimeString().slice(0, 8).replace(/:/g, "");
+
+  let access = null, oldAccess = null, timer = null;
+  const api = () => $("#api").value.trim().replace(/\/+$/, "");
+  const now = () => new Date().toTimeString().slice(0, 8);
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+  function mask(o) {
+    if (!o || typeof o !== "object") return o;
+    const r = Array.isArray(o) ? [] : {};
+    for (const [k, v] of Object.entries(o)) r[k] = /token/i.test(k) && typeof v === "string" ? `<${v.length}자>` : (typeof v === "object" ? mask(v) : v);
+    return r;
+  }
+  function log(method, path, status, detail, ms) {
+    const cls = status === 0 ? "p0" : "p" + String(status)[0];
+    const li = document.createElement("li");
+    li.innerHTML = `<span class="t">${now()}</span><span class="pill ${cls}">${status || "ERR"}</span> <b>${method}</b> <code>${esc(path)}</code>${ms != null ? ` <span class="t">${ms}ms</span>` : ""}<br><code>${esc(detail)}</code>`;
+    $("#logs").prepend(li);
+  }
+  async function call(method, path, { body, auth, token, cookie, csrf } = {}) {
+    const headers = {};
+    if (body) headers["Content-Type"] = "application/json";
+    const t = token || (auth ? access : null);
+    if (t) headers["Authorization"] = "Bearer " + t;
+    if (csrf) headers["X-Requested-With"] = "XMLHttpRequest";
+    const t0 = performance.now();
+    try {
+      const res = await fetch(api() + path, { method, headers, mode: "cors", credentials: cookie ? "include" : "omit", body: body ? JSON.stringify(body) : undefined });
+      const text = await res.text();
+      let data = null; try { data = text ? JSON.parse(text) : null; } catch { /* not json */ }
+      log(method, path, res.status, data ? JSON.stringify(mask(data)) : (text.slice(0, 160) || "(본문 없음)"), Math.round(performance.now() - t0));
+      return { ok: res.ok, status: res.status, data };
+    } catch (e) {
+      log(method, path, 0, `${e.message} — 터널이 켜져 있는지, Safari에서 API 주소를 직접 열어 인증서가 믿어지는지, 서버 CORS 허용 목록을 확인하세요`, null);
+      return { ok: false, status: 0, data: null };
+    }
+  }
+  const msg = (d, fallback) => (d && (d.message || d.code)) ? `${d.message || ""} ${d.code ? "(" + d.code + ")" : ""}`.trim() : fallback;
+  function hint(id, text, kind) { const h = $(id); h.textContent = text; h.className = "hint" + (kind ? " " + kind : ""); }
+
+  function claims(jwt) {
+    try {
+      const part = (i) => JSON.parse(decodeURIComponent(escape(atob(jwt.split(".")[i].replace(/-/g, "+").replace(/_/g, "/")))));
+      return { h: part(0), p: part(1) };
+    } catch { return null; }
+  }
+  function showToken() {
+    clearInterval(timer);
+    if (!access) { $("#tok").textContent = "토큰 없음"; $("#who").textContent = "로그인 전이에요."; return; }
+    const c = claims(access);
+    const render = () => {
+      const left = c ? Math.max(0, Math.round(c.p.exp - Date.now() / 1000)) : "?";
+      $("#tok").innerHTML = c
+        ? `<b>알고리즘</b>${esc(c.h.alg)} · kid ${esc(c.h.kid || "-")}<br><b>사용자</b>${esc(c.p.sub || "-")} · ${esc(c.p.role || "-")}<br><b>발급자</b>${esc(c.p.iss || "-")} → ${esc([].concat(c.p.aud || "-").join(","))}<br><b>남은 시간</b>${left}초 (${new Date(c.p.exp * 1000).toLocaleTimeString()})<br><b>길이</b>${access.length}자 (값은 안 보여 줌)`
+        : `토큰 ${access.length}자`;
+    };
+    render(); timer = setInterval(render, 1000);
+  }
+
+  $("#check").onclick = async () => {
+    const id = $("#su-id").value.trim(); if (!id) return hint("#su-id-hint", "아이디를 넣어 주세요", "bad");
+    const r = await call("GET", "/api/members/check-id?loginId=" + encodeURIComponent(id));
+    if (r.ok && r.data && r.data.available) hint("#su-id-hint", "쓸 수 있는 아이디예요", "ok");
+    else hint("#su-id-hint", r.ok ? "이미 있는 아이디예요" : msg(r.data, "확인 실패 (요청 기록을 보세요)"), "bad");
+  };
+  $("#signup").onclick = async () => {
+    const loginId = $("#su-id").value.trim(), password = $("#su-pw").value, passwordConfirm = $("#su-pw2").value;
+    const r = await call("POST", "/api/members", { body: { loginId, password, passwordConfirm } });
+    if (r.ok) { hint("#su-hint", "가입됐어요. 오른쪽에서 로그인해 보세요", "ok"); $("#li-id").value = loginId; $("#su-pw").value = $("#su-pw2").value = ""; }
+    else hint("#su-hint", msg(r.data, "가입 실패 (요청 기록을 보세요)"), "bad");
+  };
+  $("#login").onclick = async () => {
+    const r = await call("POST", "/api/auth/login", { body: { loginId: $("#li-id").value.trim(), password: $("#li-pw").value }, cookie: true });
+    $("#li-pw").value = "";
+    if (r.ok && r.data && r.data.accessToken) { access = r.data.accessToken; hint("#li-hint", "로그인됐어요", "ok"); $("#who").textContent = `${$("#li-id").value.trim()} 님`; showToken(); }
+    else hint("#li-hint", msg(r.data, "로그인 실패 (요청 기록을 보세요)"), "bad");
+  };
+  $("#me").onclick = () => access ? call("GET", "/api/members/me", { auth: true }) : log("GET", "/api/members/me", 0, "먼저 로그인하세요", null);
+  $("#refresh").onclick = async () => {
+    const r = await call("POST", "/api/auth/refresh", { cookie: true, csrf: true });
+    if (r.ok && r.data && r.data.accessToken) { access = r.data.accessToken; showToken(); }
+  };
+  $("#logout").onclick = async () => {
+    const r = await call("POST", "/api/auth/logout", { auth: true, cookie: true, csrf: true });
+    if (r.ok) { oldAccess = access; access = null; showToken(); $("#who").textContent = "로그아웃됐어요. 아래에서 옛 토큰을 시험해 보세요."; }
+  };
+  $("#old").onclick = () => oldAccess ? call("GET", "/api/members/me", { token: oldAccess }) : log("GET", "/api/members/me", 0, "로그아웃한 토큰이 아직 없어요", null);
+})();
+</script>
+</body>
+</html>
